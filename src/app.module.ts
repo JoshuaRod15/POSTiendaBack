@@ -24,7 +24,7 @@ import { JwtStrategy } from './modules/auth/jwt.strategy';
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.dev' }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: 'postgresql://postgres.kysqzcgmlrcbymipdghv:jutfar-9sypge-Muxxuw@aws-0-us-east-2.pooler.supabase.com:6543/postgres',
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
       ssl: {
