@@ -27,12 +27,13 @@ export class ProductService {
       }
       if (product.length > 0)
         throw new BadRequestException('Ya existe un producto con este SKU');
+      console.log(productData.SKU);
       const newProduct = this.productRepository.create({
         image: image ? image : null,
         inventory: inventory ? inventory : null,
         price: price,
         name: name,
-        SKU: SKU ? SKU : null,
+        SKU: SKU ? SKU.toString() : null,
         saleType: saleType,
         userId: user,
       });

@@ -18,7 +18,7 @@ export class Product {
   @Column()
   name: string;
 
-  @Column('numeric', { nullable: true })
+  @Column('text', { nullable: true })
   SKU: number;
 
   @Column('text', { array: true })
