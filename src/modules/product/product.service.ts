@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/entity/Product.entity';
@@ -43,6 +44,28 @@ export class ProductService {
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async editProduct(id, newDataProduct) {
+    const { image, price, inventory, name, SKU, saleType } = newDataProduct;
+    try {
+      const exist = await this.productRepository.existsBy({ id });
+      if (!exist) throw new NotFoundException();
+      const editedProduct = await this.productRepository.update(
+        { id },
+        {
+          image: image ? image : null,
+          inventory: inventory ? inventory : null,
+          price: price,
+          name: name,
+          SKU: SKU ? SKU.toString() : null,
+          saleType: saleType,
+        },
+      );
+      return editedProduct;
+    } catch (error) {
+      throw new InternalServerErrorException();
     }
   }
 

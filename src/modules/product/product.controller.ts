@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { createProductDto } from 'src/dtos/createProduct.dto';
 import { Product } from 'src/entity/Product.entity';
@@ -23,5 +32,14 @@ export class ProductController {
   async getAllProducts(@Req() req): Promise<Product[]> {
     const userId = req.user['userId'];
     return await this.productService.getAllProducts(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async editProducts(
+    @Param('id') id,
+    @Body() newDataProduct: createProductDto,
+  ) {
+    return await this.productService.editProduct(id, newDataProduct);
   }
 }

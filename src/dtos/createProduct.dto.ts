@@ -24,8 +24,8 @@ export class createProductDto {
   @IsNotEmpty()
   name: string;
 
-  @IsNumber()
-  SKU: number;
+  @IsString()
+  SKU: string;
 
   @IsEnum(saleTypeProduct, { each: true })
   @IsNotEmpty()
