@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/entity/Product.entity';
 import { User } from 'src/entity/User.entity';
+import { UserRole } from 'src/enum/userRole.enum';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -69,14 +70,25 @@ export class ProductService {
     }
   }
 
-  async getAllProducts(userId) {
-    try {
-      const allProducts = await this.productRepository.findBy({
-        userId: userId,
-      });
-      return allProducts;
-    } catch (error) {
-      throw new InternalServerErrorException(error);
+  async getAllProducts(user: User) {
+    if (user.role === UserRole.ADMIN) {
+      try {
+        const allProducts = await this.productRepository.findBy({
+          userId: { id: user.id },
+        });
+        return allProducts;
+      } catch (error) {
+        throw new InternalServerErrorException(error);
+      }
     }
+
+    return this.productRepository
+      .createQueryBuilder('product')
+      .leftJoin('product.userId', 'owner')
+      .where('owner.id = :userId OR owner.id = adminId', {
+        userId: user.id,
+        adminId: user.admin?.id,
+      })
+      .getMany();
   }
 }

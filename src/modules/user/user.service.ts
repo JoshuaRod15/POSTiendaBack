@@ -1,8 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entity/User.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { UserRole } from 'src/enum/userRole.enum';
 
 @Injectable()
 export class UserService {
@@ -23,6 +28,8 @@ export class UserService {
         name: userData.name,
         email: userData.email,
         password: hassedPas,
+        role: UserRole.ADMIN,
+        features: ['LOCAL', 'RUTA'],
       });
 
       await this.userRepository.save(newUser);
@@ -31,5 +38,26 @@ export class UserService {
       console.log(error);
       return `error al crear usuario  ${error}`;
     }
+  }
+
+  async createEmployee(userData, adminPayload) {
+    const adminUser = await this.userRepository.findOne({
+      where: { id: adminPayload },
+    });
+
+    if (!adminUser) {
+      throw new NotFoundException('Este administrador no existe');
+    }
+
+    const newEmployee = this.userRepository.create({
+      name: userData.name,
+      email: userData.email ? userData : null,
+      password: await bcrypt.hash(userData.password, 10),
+      role: UserRole.EMPLOYEE,
+      admin: adminUser,
+      features: adminUser.features,
+    });
+
+    return await this.userRepository.save(newEmployee);
   }
 }
