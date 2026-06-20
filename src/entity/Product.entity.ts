@@ -1,11 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { saleTypeProduct } from 'src/enum/saleTypeProduct.enum';
 import { User } from './User.entity';
 @Entity()
@@ -33,16 +26,4 @@ export class Product {
 
   @ManyToOne(() => User, (user) => user.id)
   userId: User;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @ManyToOne(() => User, (user) => user.id)
-  createdBy: User;
-
-  @ManyToOne(() => User, (user) => user.id)
-  updatedBy: User;
 }
