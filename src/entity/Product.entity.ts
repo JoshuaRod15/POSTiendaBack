@@ -34,10 +34,10 @@ export class Product {
   @ManyToOne(() => User, (user) => user.id)
   userId: User;
 
-  @CreateDateColumn('timestamp')
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn('timestamp')
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.id)
