@@ -35,10 +35,4 @@ export class User {
 
   @OneToMany(() => User, (user) => user.admin)
   employees?: User[];
-
-  @Column({
-    type: 'simple-array',
-    default: 'LOCAL',
-  })
-  features: string[];
 }

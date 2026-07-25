@@ -29,7 +29,6 @@ export class UserService {
         email: userData.email,
         password: hassedPas,
         role: UserRole.ADMIN,
-        features: ['LOCAL', 'RUTA'],
       });
 
       await this.userRepository.save(newUser);
@@ -41,6 +40,9 @@ export class UserService {
   }
 
   async createEmployee(userData, adminPayload) {
+    if (userData.type !== 'EMPLOYEE' && userData.type !== 'DELIVERY') {
+      throw new BadRequestException('Ingresa un tipo valido');
+    }
     const adminUser = await this.userRepository.findOne({
       where: { id: adminPayload },
     });
@@ -51,11 +53,11 @@ export class UserService {
 
     const newEmployee = this.userRepository.create({
       name: userData.name,
-      email: userData.email ? userData : null,
+      email: userData.email ? userData.email : null,
       password: await bcrypt.hash(userData.password, 10),
-      role: UserRole.EMPLOYEE,
+      role:
+        userData.type === 'EMPLOYEE' ? UserRole.EMPLOYEE : UserRole.DELIVERY,
       admin: adminUser,
-      features: adminUser.features,
     });
 
     return await this.userRepository.save(newEmployee);
